@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krushi Vikas - Project Monitoring</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="https://kvgn.in/wp-content/uploads/2021/08/cropped-KV-Logo-32x32.png" type="image/png">
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="adminpanel.css">
+    <style>
+        /* Specific logo styling to ensure it fits the header height */
+        .admin-logo {
+            height: 32px;
+            width: auto;
+            border-radius: 4px;
+            object-fit: contain;
+        }
+
+        /* Admin Profile Styling with Dropdown Support */
+        .admin-profile-container {
+            position: relative;
+            margin-left: 8px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px;
+            background: #f8fafc;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .admin-profile:hover {
+            background: #f1f5f9;
+        }
+
+        .admin-avatar {
+            width: 24px;
+            height: 24px;
+            background: var(--kv-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .admin-name {
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--text-main);
+        }
+
+        /* Dropdown Menu Styling */
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            min-width: 160px;
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: none;
+            width: 100%;
+            text-align: left;
+            background: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.text-danger {
+            color: var(--danger);
+        }
+
+        .dropdown-item.text-danger:hover {
+            background: #fef2f2;
+        }
+
+        /* Status Badge Styling (Read-Only) */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast">Action completed!</div>
+    <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none">
+
+    <!-- Edit/New Project Modal -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Activity Details</h3>
+                <button onclick="closeModal()" class="close-btn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="form-grid">
+                <input type="hidden" id="edit-id">
+                <div class="form-group full">
+                    <label>Project Name</label>
+                    <input type="text" id="edit-project" class="form-control">
+                </div>
+                <div class="form-group full">
+                    <label>Activity Name</label>
+                    <input type="text" id="edit-activity" class="form-control">
+                </div>
+                <div class="form-group"><label>Start Date</label><input type="date" id="edit-start" class="form-control"></div>
+                <div class="form-group"><label>End Date</label><input type="date" id="edit-end" class="form-control"></div>
+                <div class="form-group"><label>Target</label><input type="number" id="edit-target" class="form-control"></div>
+                <div class="form-group"><label>Achievement</label><input type="number" id="edit-ach" class="form-control"></div>
+                <div class="form-group full">
+                    <label>Status</label>
+                    <select id="edit-status" class="form-control">
+                        <option value="To Be Planned">To Be Planned</option>
+                        <option value="Planned">Planned</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Complete">Complete</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>RESP Email</label><input type="email" id="edit-resp" class="form-control"></div>
+                <div class="form-group"><label>MGR Email</label><input type="email" id="edit-mgr" class="form-control"></div>
+                <div class="form-group full"><label>COORD Email</label><input type="email" id="edit-coord" class="form-control"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-top btn-top-primary" id="saveDataBtn">Save Project</button>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-brand">
+            <img src="https://kvgn.in/wp-content/uploads/2021/08/cropped-KV-Logo-32x32.png" alt="KV Logo" class="admin-logo">
+            <h1 class="header-title">KV Dashboard</h1>
+        </div>
+        <div class="header-right">
+            <button class="btn-top btn-top-primary" id="newProjectBtn"><i data-lucide="plus"></i> New Project</button>
+            <button class="btn-top btn-top-success" id="uploadBtn"><i data-lucide="upload"></i> Upload</button>
+            
+            
+            <!-- Admin Profile with Dropdown -->
+            <div class="admin-profile-container">
+                <div class="admin-profile" id="adminProfileTrigger">
+                    <div class="admin-avatar">
+                        <i data-lucide="user" style="width: 14px; height: 14px;"></i>
+                    </div>
+                    <span class="admin-name">Admin</span>
+                    <i data-lucide="chevron-down" style="width: 12px; height: 12px; margin-left: 4px; color: var(--text-muted);"></i>
+                </div>
+                
+                <div class="dropdown-menu" id="adminDropdown">
+                    <button class="dropdown-item">
+                        <i data-lucide="settings" style="width: 14px; height: 14px;"></i> Settings
+                    </button>
+                    <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
+                    <button class="dropdown-item text-danger" id="logoutBtn">
+                        <i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Statistics Section -->
+        <section class="stats-grid">
+            <div class="stat-card"><span class="val" id="stat-total">0</span><span class="lbl">Total</span></div>
+            <div class="stat-card"><span class="val" id="stat-inprogress" style="color:var(--kv-blue)">0</span><span class="lbl">In Progress</span></div>
+            <div class="stat-card"><span class="val" id="stat-completed" style="color:var(--success)">0</span><span class="lbl">Completed</span></div>
+            <div class="stat-card overdue-card"><span class="val" id="stat-overdue" style="color:var(--danger)">0</span><span class="lbl">Overdue</span></div>
+        </section>
+
+        <!-- Main Table Card -->
+        <div class="card-main">
+            <div class="table-toolbar">
+                <h2 class="toolbar-title">Project Tracking</h2>
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search project name...">
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-project">Project Name</th>
+                            <th class="col-stakeholders">Stakeholders</th>
+                            <th class="col-status">Status</th>
+                            <th class="col-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectTable">
+                        <!-- Data injected by script.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dropdown Toggle Logic
+        const trigger = document.getElementById('adminProfileTrigger');
+        const dropdown = document.getElementById('adminDropdown');
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', () => {
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Prevent dropdown close when clicking inside it
+        dropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    </script>
+    <script src="adminpanel.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>User Form | Monitoring Tool</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/userform/userform.css">
+</head>
+<body>
+
+<div class="form-container">
+    <div class="card-header-section">
+        <h1>Create Account</h1>
+        <p class="subtitle">Join the Monitoring Tool network</p>
+    </div>
+
+    <div class="card-body-section">
+        <form action="/accept" id="registerForm" method="post">
+
+            <div class="gap-y">
+                <label class="form-label">User Name</label>
+                <input type="text" name="name" id="name" class="form-control" required>
+            </div>
+
+            <div class="gap-y">
+                <label class="form-label">Email address</label>
+                <input type="email" name="email" id="email" class="form-control" required>
+            </div>
+
+            <div class="gap-y">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+            <div class="gap-y"> 
+                <label class="form-label">Default Access Role</label> 
+                <input type="text" name="userrole" value="USER" readonly class="form-control"> 
+             </div>
+
+            <button onclick="window.location.href='/login/login.html'" type="submit" class="btn btn-primary">
+                Create System Account
+            </button>
+
+        </form>
+    </div>
+
+    <div class="card-footer-note">
+        By registering, you agree to the Terms of Service.
+    </div>
+</div>
+
+</body>
+</html>

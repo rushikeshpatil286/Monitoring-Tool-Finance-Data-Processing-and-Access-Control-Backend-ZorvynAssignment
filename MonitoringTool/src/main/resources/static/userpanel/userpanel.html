@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Program Monitoring System - Krushi Vikas</title>
+    <link rel="stylesheet" href="userpanel.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <div class="logo-box">KV</div>
+            <h1>Program Monitoring System</h1>
+        </div>
+        
+        <!-- User Profile Section -->
+        <div class="user-profile" id="userProfile">
+            <div class="user-info" id="userToggle">
+                <span class="username" id="displayUsername">Admin User</span>
+                <div class="user-icon">
+                    <i data-lucide="user" size="18"></i>
+                </div>
+            </div>
+            <!-- Dropdown Menu -->
+            <div class="user-dropdown hidden" id="userDropdown">
+                <div class="dropdown-header">
+                    <p class="role">System Administrator</p>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i data-lucide="log-out" size="14"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Dashboard Summary Stats -->
+        <section class="stats-grid" id="stats-section">
+            <div class="stat-card">
+                <span class="lbl">Total Tasks</span>
+                <span class="val" id="stat-total">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="lbl">In Progress</span>
+                <span class="val" id="stat-progress" style="color: var(--kv-blue)">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="lbl">Completed</span>
+                <span class="val" id="stat-complete" style="color: var(--success)">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="lbl">Overdue</span>
+                <span class="val" id="stat-overdue" style="color: var(--danger)">0</span>
+            </div>
+        </section>
+
+        <!-- PROJECT LIST VIEW -->
+        <div id="project-list-view">
+            <h2 class="view-title">Projects Dashboard</h2>
+            <div class="card-main">
+                <div class="table-toolbar">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" size="14"></i>
+                        <input type="text" class="search-bar" placeholder="Search project name..." id="projectSearch" />
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Responsible Team</th>
+                                <th>Task Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectListBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVITIES LIST VIEW -->
+        <div id="activities-view" class="hidden">
+            <div class="sheet-header nav-header">
+                <button class="btn-action" onclick="showProjects()">
+                    <i data-lucide="arrow-left" size="14"></i> Back to Dashboard
+                </button>
+                <h2 id="selectedProjectTitle">Project Activities</h2>
+            </div>
+            <div class="card-main">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Activity Name</th>
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityListBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT ACTIVITY VIEW -->
+        <div id="edit-activity-view" class="hidden">
+            <div class="sheet-container">
+                <div class="sheet-header">
+                    <button class="btn-action" onclick="showActivities()">
+                        <i data-lucide="arrow-left" size="14"></i> Back
+                    </button>
+                    <h2 class="form-title">Update Activity Status</h2>
+                </div>
+                <div class="sheet-grid">
+                    <div class="sheet-item full"><label>Project Name</label><input type="text" id="f_proj" class="sheet-input" readonly /></div>
+                    <div class="sheet-item full"><label>Activity Name</label><input type="text" id="f_act" class="sheet-input" readonly /></div>
+                    <div class="sheet-item"><label>Status (Edit Here)</label>
+                        <select id="f_status" class="sheet-input">
+                            <option value="In Progress">In Progress</option>
+                            <option value="Complete">Complete</option>
+                            <option value="PLANNED">PLANNED</option>
+                            <option value="TO_BE_PLANNED">TO_BE_PLANNED</option>
+                        </select>
+                    </div>
+                    <div class="sheet-item"><label>End Date</label><input type="text" id="f_end" class="sheet-input" readonly /></div>
+                    <div class="sheet-item"><label>Target</label><input type="text" id="f_target" class="sheet-input" readonly /></div>
+                    <div class="sheet-item"><label>Achievement</label><input type="text" id="f_ach" class="sheet-input" readonly /></div>
+                    <div class="sheet-item"><label>Stakeholder</label><input type="text" id="f_resp" class="sheet-input" readonly /></div>
+                </div>
+                <div class="sheet-footer">
+                    <button class="btn-primary" onclick="updateActivityStatus()">Update Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Action completed!</div>
+
+    <script src="userpanel.js"></script>
+</body>
+</html>
